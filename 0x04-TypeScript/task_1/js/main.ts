@@ -6,3 +6,7 @@ interface Teacher {
     location: string;
     [property: string]: any;
 }
+
+interface Directors extends Teacher {
+    numberpfReports: number;
+}
