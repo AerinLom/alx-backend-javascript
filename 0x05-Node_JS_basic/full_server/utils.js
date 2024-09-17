@@ -22,14 +22,14 @@ const readDatabase = (filePath) => new Promise((resolve, reject) => {
           const studentDetails = record.split(',');
           const studentValues = studentDetails.slice(0, studentDetails.length - 1);
           const major = studentDetails[studentDetails.length - 1];
-          
+
           if (!Object.keys(studentsByMajor).includes(major)) {
             studentsByMajor[major] = [];
           }
-          
+
           const student = studentProps
             .map((propName, index) => [propName, studentValues[index]]);
-          
+
           studentsByMajor[major].push(Object.fromEntries(student));
         }
         resolve(studentsByMajor);
