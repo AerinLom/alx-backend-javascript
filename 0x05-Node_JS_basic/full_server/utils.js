@@ -1,23 +1,42 @@
-const fs = require('fs').promises;
+import fs from 'fs';
 
-async function readDatabase(filePath) {
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    const lines = data.trim().split('\n');
-    const students = {};
-
-    lines.slice(1).forEach((line) => {
-      const [firstname, , , field] = line.split(',');
-      if (!students[field]) {
-        students[field] = [];
-      }
-      students[field].push(firstname);
-    });
-
-    return students;
-  } catch (error) {
-    throw new Error('Cannot load the database');
+const readDatabase = (filePath) => new Promise((resolve, reject) => {
+  if (!filePath) {
+    reject(new Error('Cannot load the database'));
   }
-}
+  if (filePath) {
+    fs.readFile(filePath, (error, fileData) => {
+      if (error) {
+        reject(new Error('Cannot load the database'));
+      }
+      if (fileData) {
+        const lines = fileData
+          .toString('utf-8')
+          .trim()
+          .split('\n');
+        const studentsByMajor = {};
+        const headers = lines[0].split(',');
+        const studentProps = headers.slice(0, headers.length - 1);
 
-module.exports = { readDatabase };
+        for (const record of lines.slice(1)) {
+          const studentDetails = record.split(',');
+          const studentValues = studentDetails.slice(0, studentDetails.length - 1);
+          const major = studentDetails[studentDetails.length - 1];
+          
+          if (!Object.keys(studentsByMajor).includes(major)) {
+            studentsByMajor[major] = [];
+          }
+          
+          const student = studentProps
+            .map((propName, index) => [propName, studentValues[index]]);
+          
+          studentsByMajor[major].push(Object.fromEntries(student));
+        }
+        resolve(studentsByMajor);
+      }
+    });
+  }
+});
+
+export default readDatabase;
+module.exports = readDatabase;
