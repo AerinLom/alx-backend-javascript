@@ -23,4 +23,18 @@ describe('Cart page', () => {
       done();
     });
   });
+
+  it('GET /cart/:id returns 404 response for negatives', (done) => {
+    request.get(`${API_URL}/cart/-47`, (_err, res, _body) => {
+      expect(res.statusCode).to.be.equal(404);
+      done();
+    });
+  });
+
+  it('GET /cart/:id returns 404 response for non-numerics', (done) => {
+    request.get(`${API_URL}/cart/d200-44a5-9de6`, (_err, res, _body) => {
+      expect(res.statusCode).to.be.equal(404);
+      done();
+    });
+  });
 });
