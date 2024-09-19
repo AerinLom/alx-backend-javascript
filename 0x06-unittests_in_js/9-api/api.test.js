@@ -16,10 +16,11 @@ describe('Index page', () => {
 describe('Cart page', () => {
   const API_URL = 'http://localhost:7865';
 
-  it('should return status code 200 and correct message when id is a number', (done) => {
+  it('returns status code 200 and correct message', (done) => {
     request.get(`${API_URL}/cart/123`, (_err, res, body) => {
       expect(res.statusCode).to.equal(200);
       expect(body).to.equal('Payment methods for cart 123');
       done();
     });
   });
+});
